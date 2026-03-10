@@ -1,0 +1,85 @@
+const productModel = require('../models/productModel');
+
+exports.create = async (data) => {
+  if (!data.name?.trim()) {
+    throw new Error('Name é obrigatorio');
+  }
+
+  if (!data.description?.trim()) {
+    throw new Error('Description é obrigatoria'); 
+  }  
+
+
+  
+ if (data.price === undefined || isNaN(Number(data.price))) {
+  throw new Error('Price é obrigatoria');
+}
+
+    if (Number(data.price) <= 0) {
+      throw new Error('Price deve ser maior que zero')
+    }  
+
+  const name = await productModel.findByName(data.name);
+
+  if (name) {
+    throw new Error('Name ja cadastrado');
+  }
+
+  return await productModel.create({
+    name: data.name.trim(),
+    description: data.description || null,
+    price: Number (data.price),
+    stock: Number (data.stock),
+    image: data.image || null
+    
+  })
+};
+
+
+exports.update = async (id, data) => {
+  const produto = await productModel.findById(id);
+
+  if (!produto) {
+    throw new Error('Produto não encontrado');
+  }
+
+  if ('name' in data) {
+    if (!data.name?.trim()) {
+    throw new Error('Name não pode ser vazio');
+  }
+const nameExistente = await productModel.findByName(data.name);
+
+  if (nameExistente && nameExistente.id !== id) {
+    throw new Error ('Name ja cadastrado');
+  }
+}
+
+  return await productModel.update(id, data);
+};
+
+exports.findAll = async () => {
+  return await productModel.findAll();
+};
+
+
+
+exports.findById = async (id) => {
+  const produto = await productModel.findById(id);
+
+  if (!produto) {
+    throw new Error('Produto não encontrado');
+  }
+
+  return produto;
+}; 
+
+
+exports.remove = async (id) => {
+  const produto = await productModel.findById(id);
+
+  if (!produto) {
+    throw new Error('Produto não encontrado');
+  }
+
+  return await productModel.remove(id);
+};
