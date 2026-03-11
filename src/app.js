@@ -1,30 +1,28 @@
-// 1️⃣ Importações
+// 1 Importações
 require('dotenv').config();
 const express = require('express');
 
-// 2️⃣ Criar app
+// 2 Criar app
 const app = express();
 
 
-// 3️⃣ Middlewares globais
+// 3  Middlewares globais
 app.use(express.json());
 
-
-// 1️⃣ Importações
+// 4 Transactions Rotas 
+const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
 
-
-
-// 4️⃣ Registrar rotas
+app.use('/orders', orderRoutes);
 app.use('/products', productRoutes);
 app.use('/admin', adminRoutes);
 
 
-// 5️⃣ Porta
+// 5 Porta
 const PORT = 4000;
 
-// 6️⃣ Iniciar servidor
+// 7 Iniciar servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });

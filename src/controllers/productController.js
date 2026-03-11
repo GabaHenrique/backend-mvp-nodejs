@@ -87,3 +87,26 @@ exports.removerProduto = async (req, res) => {
         }
      return res.status(500).json({ error: 'Erro interno no servidor' })
 }};
+
+
+// ADICIONAR STOCK
+exports.addStock = async (req, res) => {
+
+  try {
+
+    const productId = req.params.id;
+    const { quantity } = req.body;
+
+    const result = await productService.addStock(productId, quantity);
+
+    res.status(200).json(result);
+
+  } catch (error) {
+
+    res.status(400).json({
+      error: error.message
+    });
+
+  }
+
+};

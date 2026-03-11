@@ -9,6 +9,7 @@ router.get('/:id', productController.buscarProduto);
 router.post('/', authMiddleware, productController.criarProduto);
 router.put('/:id', authMiddleware, productController.atualizarProduto);
 router.delete('/:id', authMiddleware, productController.removerProduto);
+router.patch('/:id/stock', productController.addStock);
 
 module.exports = router;
 

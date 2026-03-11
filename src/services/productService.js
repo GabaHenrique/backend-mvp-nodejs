@@ -83,3 +83,24 @@ exports.remove = async (id) => {
 
   return await productModel.remove(id);
 };
+
+
+exports.addStock = async (productId, quantity) => {
+
+  if (quantity <= 0) {
+    throw new Error("Quantidade inválida");
+  }
+
+  const product = await productModel.findById(productId);
+
+  if (!product) {
+    throw new Error("Produto não encontrado");
+  }
+
+  await productModel.addStock(productId, quantity);
+
+  return {
+    message: "Estoque atualizado"
+  };
+
+};

@@ -1,4 +1,14 @@
 {
+  "name": "rua-mvp-nodejs",
+  "version": "1.0.0",
+  "description": "Projeto backend Node.js + Express + MySQL",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node src/app.js"
+  },
+  "author": "Gabriel Henrique Moeller",
+  "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^17.3.1",

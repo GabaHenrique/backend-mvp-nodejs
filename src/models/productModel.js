@@ -62,3 +62,42 @@ exports.remove = async (id) => {
     [id]
   );
 };
+
+exports.updateStock = async (productId, quantity, connection) => {
+
+  const[result] = await connection.query (
+      `UPDATE products
+       SET stock = stock - ?
+       WHERE id = ? AND stock >= ?`,
+      [quantity, productId, quantity]
+    );
+if (result.affectedRows === 0) {
+  throw new Error("Estoque insuficiente");
+  }
+
+};
+
+exports.getProductForUpdate = async (productId, connection) => {
+
+  const [rows] = await connection.query(
+    `SELECT * FROM products WHERE id = ? FOR UPDATE`,
+    [productId]
+  );
+
+  return rows[0];
+};
+
+
+exports.addStock = async (productId, quantity) => {
+
+  const [result] = await pool.query(
+    `
+    UPDATE products
+    SET stock = stock + ?
+    WHERE id = ?
+    `,
+    [quantity, productId]
+  );
+
+  return result;
+};
