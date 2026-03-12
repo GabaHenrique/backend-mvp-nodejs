@@ -1,13 +1,22 @@
-exports.createItems = async (connection, orderId, items) => {
+exports.createItem = async (data, connection) => {
 
-  for (const item of items) {
-
+  const { order_id, product_id, quantity, price} = data;
+  
     await connection.query(
       `INSERT INTO order_items (order_id, product_id, quantity, price)
        VALUES (?, ?, ?, ?)`,
-      [orderId, item.product_id, item.quantity, item.price]
+      [order_id, product_id, quantity, price]
     );
 
-  }
+  };
+
+exports.getItemsByOrderId = async (orderId, connection) => {
+
+  const [rows] = await connection.query(
+    `SELECT * FROM order_items WHERE order_id = ?`,
+    [orderId]
+  );
+
+  return rows;
 
 };

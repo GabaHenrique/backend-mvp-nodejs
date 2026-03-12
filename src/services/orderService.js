@@ -79,3 +79,53 @@ if (product.stock < item.quantity) {
   }
 
 };
+
+
+exports.updateOrderStatus = async (orderId, status) => {
+
+  const connection = await db.getConnection();
+
+  try {
+
+    await connection.beginTransaction();
+
+    const validStatus = ['pending','completed','cancelled'];
+
+    if (!validStatus.includes(status)) {
+      throw new Error("Status inválido");
+    }
+
+    if (status === 'cancelled') {
+
+      const items = await orderItemModel.getItemsByOrderId(orderId, connection);
+
+      for (const item of items) {
+
+        await productModel.restoreStock(
+          item.product_id,
+          item.quantity,
+          connection
+        );
+
+      }
+
+    }
+
+    await orderModel.updateStatus(orderId, status, connection);
+
+    await connection.commit();
+
+    return { orderId, status };
+
+  } catch (error) {
+
+    await connection.rollback();
+    throw error;
+
+  } finally {
+
+    connection.release();
+
+  }
+
+};

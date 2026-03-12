@@ -102,3 +102,14 @@ exports.addStock = async (productId, quantity) => {
   return result;
 };
 
+
+exports.restoreStock = async (productId, quantity, connection) => {
+
+  await connection.query(
+    `UPDATE products
+     SET stock = stock + ?
+     WHERE id = ?`,
+    [quantity, productId]
+  );
+
+};
