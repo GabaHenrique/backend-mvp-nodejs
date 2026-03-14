@@ -1,18 +1,30 @@
 const productService = require('../services/productService');
 
 
+exports.getProducts = async (req, res) => {
 
-// LISTAR TODOS
-exports.listarProdutos = async (req, res) => {
+  
+  const category = req.query.category;
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 3;
+
   try {
-    const produtos = await productService.findAll();
-    return res.json(produtos);
-  } catch (error) {
-    console.error("Erro real", error);
-    return res.status(500).json({ error: 'ERRROOOO interno no servidor' });
-  }
-};
 
+    const products = await productService.getProducts(
+      category,
+      page,
+      limit
+    );
+
+    res.json(products);
+
+  } catch (error) {
+
+    res.status(500).json({ error: error.message });
+
+  }
+
+};
    
 // BUSCAR POR ID
 exports.buscarProduto = async (req, res) => {
@@ -110,3 +122,5 @@ exports.addStock = async (req, res) => {
   }
 
 };
+
+

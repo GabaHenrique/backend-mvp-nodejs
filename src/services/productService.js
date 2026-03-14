@@ -57,12 +57,6 @@ const nameExistente = await productModel.findByName(data.name);
   return await productModel.update(id, data);
 };
 
-exports.findAll = async () => {
-  return await productModel.findAll();
-};
-
-
-
 exports.findById = async (id) => {
   const produto = await productModel.findById(id);
 
@@ -102,5 +96,21 @@ exports.addStock = async (productId, quantity) => {
   return {
     message: "Estoque atualizado"
   };
+
+};
+
+exports.getProducts = async (category, page, limit) => {
+
+  const offset = (page - 1) * limit;
+
+  if (category) {
+    return await productModel.getProductsByCategory(
+      category,
+      limit,
+      offset
+    );
+  }
+
+  return await productModel.getAllProducts(limit, offset);
 
 };

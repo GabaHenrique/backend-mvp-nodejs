@@ -1,8 +1,28 @@
 const pool = require('../config/database');
 
-exports.findAll = async () => {
-  const [rows] = await pool.query('SELECT * FROM products');
+exports.getAllProducts = async (limit, offset) => {
+
+  const [rows] = await pool.query(
+    `SELECT * FROM products
+     LIMIT ? OFFSET ?`,
+    [Number(limit), Number(offset)]
+  );
+
   return rows;
+
+};
+
+exports.getProductsByCategory = async (category, limit, offset) => {
+
+  const [rows] = await pool.query(
+    `SELECT * FROM products
+     WHERE category = ?
+     LIMIT ? OFFSET ?`,
+    [category, Number(limit), Number(offset)]
+  );
+
+  return rows;
+
 };
 
 exports.findById = async (id) => {
@@ -113,3 +133,5 @@ exports.restoreStock = async (productId, quantity, connection) => {
   );
 
 };
+
+
