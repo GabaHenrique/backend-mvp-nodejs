@@ -29,3 +29,26 @@ exports.login = async (req, res) => {
         res.status(401).json({ error: error.message });
     }
 };
+
+
+
+
+exports.getDashboard = async (req, res) => {
+
+  try {
+
+    const data = await adminService.getDashboard();
+
+    res.json(data);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+};

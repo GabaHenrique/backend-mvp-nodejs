@@ -1,6 +1,8 @@
 // 1 Importações
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
+
 
 // 2 Criar app
 const app = express();
@@ -14,9 +16,11 @@ const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
 
+
 app.use('/orders', orderRoutes);
 app.use('/products', productRoutes);
 app.use('/admin', adminRoutes);
+app.use(cors());
 
 // 5 Order View
 const orderViewRoutes = require('./routes/orderViewRoutes');
