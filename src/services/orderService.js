@@ -129,3 +129,57 @@ exports.updateOrderStatus = async (orderId, status) => {
   }
 
 };
+
+exports.listOrders = async () => {  
+  const orders = await orderModel.findAll();  
+  
+  return orders;};
+
+
+exports.getOrderById = async (id) => {
+
+  const order = await orderModel.findById(id);
+
+  if (!order) {
+    throw new Error("Pedido não encontrado");
+  }
+
+  const items = await orderItemModel.getItemsWithProduct(id);
+
+  return {
+    ...order,
+    items
+  };
+
+};
+
+exports.listOrdersWithProducts = async () => {
+
+  const rows = await orderModel.findOrdersWithProducts();
+
+  const orders = {};
+
+  for (const row of rows) {
+
+    if (!orders[row.order_id]) {
+      orders[row.order_id] = {
+        id: row.order_id,
+        status: row.status,
+        total: row.total,
+        items: []
+      };
+    }
+
+    orders[row.order_id].items.push({
+      product_id: row.product_id,
+      product_name: row.product_name,
+      image: row.image,
+      quantity: row.quantity,
+      price: row.price
+    });
+
+  }
+
+  return Object.values(orders);
+
+};
