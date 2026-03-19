@@ -16,11 +16,11 @@ const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
 
-
+app.use(cors());
 app.use('/orders', orderRoutes);
 app.use('/products', productRoutes);
 app.use('/admin', adminRoutes);
-app.use(cors());
+
 
 // 5 Order View
 const orderViewRoutes = require('./routes/orderViewRoutes');
