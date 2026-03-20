@@ -18,10 +18,15 @@ exports.getProducts = async (req, res) => {
 
     res.json(products);
 
-  } catch (error) {
+  }  catch (error) {
+    console.error("ERRO COMPLETO getProducts:");
+    console.error(error);
+    console.error("CATEGORY:", category);
+    console.error("PAGE:", page);
+    console.error("LIMIT:", limit);
+  res.status(500).json({ error: error.message || "Erro interno no servidor" });{
 
-    res.status(500).json({ error: error.message });
-
+   }
   }
 
 };

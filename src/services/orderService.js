@@ -10,12 +10,22 @@ exports.createOrder = async (data) => {
   const connection = await db.getConnection();
 
   try {
+    const { items, total } = data;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      throw new Error("O pedido precisa ter pelo menos um item");
+    }
+
+    if (total === undefined || total === null || Number(total) <= 0) {
+      throw new Error("Total do pedido inválido");
+    }
 
     await connection.beginTransaction();
 
-    const { items, total } = data;
-
     for (const item of items) {
+      if (!item.product_id || !item.quantity || !item.price) {
+        throw new Error("Item do pedido inválido");
+      }
 
     const product = await productModel.getProductForUpdate(
   item.product_id,

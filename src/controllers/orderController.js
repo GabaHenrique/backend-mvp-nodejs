@@ -1,3 +1,4 @@
+const { json } = require('express');
 const orderService = require('../services/orderService');
 
 exports.createOrder = async (req, res) => {
@@ -7,18 +8,17 @@ exports.createOrder = async (req, res) => {
     const orderId = await orderService.createOrder(req.body);
 
     res.status(201).json({
-      message: "Pedido criado",
+      message: "Pedido criado com sucesso",
       orderId
     });
 
   } catch (error) {
+    console.error("Erro ao criar pedido:", error);
 
-    res.status(500).json({
+    res.status(400).json({
       error: error.message
     });
-
   }
-
 };
 
 exports.updateStatus = async (req, res) => {
