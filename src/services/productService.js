@@ -30,6 +30,7 @@ exports.create = async (data) => {
     description: data.description || null,
     price: Number (data.price),
     stock: Number (data.stock),
+    catagory: data.category || null,
     image: data.image || null
     
   })
@@ -100,17 +101,34 @@ exports.addStock = async (productId, quantity) => {
 };
 
 exports.getProducts = async (category, page, limit) => {
+  const parsedPage = Number(page);
+  const parsedLimit = Number(limit);
+  
+  const hasPagination = 
+  !Number.isNaN(parsedPage) &&
+  !Number.isNaN(parsedLimit) &&
+  parsedPage > 0 &&
+  parsedLimit > 0;
 
-  const offset = (page - 1) * limit;
+if (hasPagination) {
+  const offset = (parsedPage - 1) * parsedLimit;
+
 
   if (category) {
-    return await productModel.getProductsByCategory(
+    return await productModel.getProductsByCategoryPaginated(
       category,
-      limit,
+      parsedLimit,
       offset
     );
   }
 
-  return await productModel.getAllProducts(limit, offset);
+  return await productModel.getAllProductsPaginated(parsedLimit, offset);
+}
 
+if (category) {
+  return await productModel.getProductsByCategory(category);
+
+}
+
+return await productModel.getAllProducts();
 };

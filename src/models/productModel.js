@@ -1,28 +1,49 @@
 const pool = require('../config/database');
 
-exports.getAllProducts = async (limit, offset) => {
+exports.getAllProducts = async () => {
 
   const [rows] = await pool.query(
     `SELECT * FROM products
-     LIMIT ? OFFSET ?`,
-    [Number(limit), Number(offset)]
+     ORDER BY id DESC`,
+    
   );
 
   return rows;
 
 };
 
-exports.getProductsByCategory = async (category, limit, offset) => {
+exports.getProductsByCategory = async (category) => {
 
   const [rows] = await pool.query(
     `SELECT * FROM products
      WHERE category = ?
-     LIMIT ? OFFSET ?`,
+     ORDER BY id DESC`,
+    [category]
+  );
+
+  return rows;
+};
+
+exports.getAllProductsPaginated = async (limit, offset) => {
+  const [rows] = await pool.query(
+    `SELECT * FROM products
+    ORDER BY id DESC
+    LIMIT ? OFFSET ?`,
+    [Number(limit), Number(offset)]
+  );
+  return rows;
+};
+
+exports.getProductsByCategoryPaginated = async (category, limit, offset) => {
+  const [rows] = await pool.query(
+    `SELECT * FROM products
+    WHERE category = ?
+    ORDER BY id DESC
+    LIMIT ? OFFSET ?`,
     [category, Number(limit), Number(offset)]
   );
 
   return rows;
-
 };
 
 exports.findById = async (id) => {
@@ -43,13 +64,14 @@ exports.findByName = async (name) => {
 
 exports.create = async (product) => {
   const [result] = await pool.query(
-    `INSERT INTO products (name, description, price, stock, image)
+    `INSERT INTO products (name, description, price, stock, category, image)
      VALUES (?, ?, ?, ?, ?)`,
     [
       product.name,
       product.description,
       product.price,
       product.stock,
+      product.category,
       product.image
     ]
   );
@@ -63,13 +85,14 @@ exports.create = async (product) => {
 exports.update = async (id, data) => {
   await pool.query(
     `UPDATE products
-     SET name = ?, description = ?, price = ?, stock = ?, image = ?
+     SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ?
      WHERE id = ?`,
     [
       data.name,
       data.description,
       data.price,
       data.stock,
+      data.category,
       data.image,
       id
     ]

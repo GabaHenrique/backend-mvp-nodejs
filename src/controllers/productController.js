@@ -2,33 +2,16 @@ const productService = require('../services/productService');
 
 
 exports.getProducts = async (req, res) => {
-
-  
-  const category = req.query.category;
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 3;
-
   try {
+    const { category, page, limit } = req.query;
 
-    const products = await productService.getProducts(
-      category,
-      page,
-      limit
-    );
+    const products = await productService.getProducts(category, page, limit);
 
-    res.json(products);
-
-  }  catch (error) {
-    console.error("ERRO COMPLETO getProducts:");
-    console.error(error);
-    console.error("CATEGORY:", category);
-    console.error("PAGE:", page);
-    console.error("LIMIT:", limit);
-  res.status(500).json({ error: error.message || "Erro interno no servidor" });{
-
-   }
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Erro ao buscar produtos:", error);
+    res.status(500).json({ error: error.message });
   }
-
 };
    
 // BUSCAR POR ID
