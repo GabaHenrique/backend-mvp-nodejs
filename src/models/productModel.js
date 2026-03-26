@@ -65,7 +65,7 @@ exports.findByName = async (name) => {
 exports.create = async (product) => {
   const [result] = await pool.query(
     `INSERT INTO products (name, description, price, stock, category, image)
-     VALUES (?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?)`,
     [
       product.name,
       product.description,
