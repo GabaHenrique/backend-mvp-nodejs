@@ -1,0 +1,39 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql_rua_bike
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: ruabikeshop_dev1
+      MYSQL_ROOT_HOST: '%'
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    # 🔥 HEALTHCHECK (o coração da solução)
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot1234"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: .
+    container_name: backend_rua_bike
+    restart: always
+
+    ports:
+      - "4001:4000"
+
+    # 🔥 AGORA ELE ESPERA O MYSQL FICAR PRONTO
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

@@ -30,7 +30,7 @@ exports.create = async (data) => {
     description: data.description || null,
     price: Number (data.price),
     stock: Number (data.stock),
-    catagory: data.category || null,
+    category: data.category || null,
     image: data.image || null
     
   })

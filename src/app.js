@@ -16,7 +16,9 @@ const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5500"
+}));
 app.use('/orders', orderRoutes);
 app.use('/products', productRoutes);
 app.use('/admin', adminRoutes);
@@ -29,7 +31,7 @@ app.use('/orders', orderViewRoutes);
 
 
 // 5 Porta
-const PORT = 4000;
+const PORT = 4001;
 
 // 7 Iniciar servidor
 app.listen(PORT, () => {
