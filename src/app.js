@@ -24,12 +24,6 @@ app.use('/products', productRoutes);
 app.use('/admin', adminRoutes);
 
 
-// 5 Order View
-const orderViewRoutes = require('./routes/orderViewRoutes');
-
-app.use('/orders', orderViewRoutes);
-
-
 // 5 Porta
 const PORT = process.env.PORT;
 
