@@ -31,7 +31,7 @@ app.use('/orders', orderViewRoutes);
 
 
 // 5 Porta
-const PORT = 4001;
+const PORT = process.env.PORT;
 
 // 7 Iniciar servidor
 app.listen(PORT, () => {

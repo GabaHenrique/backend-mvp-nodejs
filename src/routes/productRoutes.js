@@ -11,6 +11,6 @@ router.post('/', authMiddleware, productController.criarProduto);
 router.put('/:id', authMiddleware, productController.atualizarProduto);
 router.delete('/:id', authMiddleware, productController.removerProduto);
 
-router.patch('/:id/stock', productController.addStock);
+router.patch('/:id/stock', authMiddleware, productController.addStock);
 
 module.exports = router;

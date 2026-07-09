@@ -20,7 +20,6 @@ exports.updateStatus = async (orderId, status, connection) => {
      WHERE id = ?`,
     [status, orderId]
   );
-
 };
 
 exports.findAll = async () => {
