@@ -23,6 +23,11 @@ const mockConnection = {
 
 db.getConnection.mockResolvedValue(mockConnection);
 
+beforeEach(() => {
+  jest.clearAllMocks();
+  db.getConnection.mockResolvedValue(mockConnection);
+});
+
 test("deve criar pedido com estoque suficiente", async () => {
 
   productModel.getProductForUpdate.mockResolvedValue({
@@ -48,5 +53,31 @@ test("deve criar pedido com estoque suficiente", async () => {
   const result = await orderService.createOrder(data);
 
   expect(result).toBe(1);
+
+});
+
+test("não deve criar pedido com estoque insuficiente", async () => {
+
+  productModel.getProductForUpdate.mockResolvedValue({
+    id: 1,
+    stock: 1
+  });
+
+  const data = {
+    total: 100,
+    items: [
+      {
+        product_id: 1,
+        quantity: 5,
+        price: 50
+      }
+    ]
+  };
+
+  await expect(orderService.createOrder(data)).rejects.toThrow("Estoque insuficiente");
+
+  expect(mockConnection.rollback).toHaveBeenCalled();
+  expect(mockConnection.commit).not.toHaveBeenCalled();
+  expect(orderModel.createOrder).not.toHaveBeenCalled();
 
 });

@@ -32,15 +32,14 @@ exports.createOrder = async (data) => {
   connection
 );
 
-
-if (!product) {
+  if (!product) {
   throw new Error("Produto não encontrado");
-}
+  }
 
-if (product.stock < item.quantity) {
-  console.log("ERRO: estoque insuficiente");
+  if (product.stock < item.quantity) {
   throw new Error("Estoque insuficiente");
-}
+  
+};
 
     }
        // 1 - CRIAR PEDIDO 

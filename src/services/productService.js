@@ -55,7 +55,17 @@ const nameExistente = await productModel.findByName(data.name);
   }
 }
 
-  return await productModel.update(id, data);
+const dadosCompletos = {
+  name: data.name ?? produto.name,
+  description: data.description ?? produto.description,
+  price: data.price !== undefined ? Number (data.price) : produto.price,
+  stock: data.stock !== undefined ? Number (data.stock) : produto.stock,
+  category: data.category ?? produto.category,
+  image: data.image ?? produto.image
+
+};
+
+return await productModel.update(id, dadosCompletos)
 };
 
 exports.findById = async (id) => {
