@@ -16,8 +16,16 @@ const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
 
+const allowedOrigins = [process.env.FRONTEND_URL];
+
 app.use(cors({
-  origin: "http://localhost:5500"
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Bloqueado por CORS"));
+    }
+  }
 }));
 app.use('/orders', orderRoutes);
 app.use('/products', productRoutes);

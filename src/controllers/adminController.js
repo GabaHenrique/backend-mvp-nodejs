@@ -3,7 +3,7 @@ const adminService = require('../services/adminService');
 
 exports.register = async (req, res) => {
     try {
-        console.log(req.body); // debug
+        
         
         const { name, email, password } = req.body;
 
