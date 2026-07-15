@@ -16,8 +16,10 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "helmet": "^8.3.0",
+    "ioredis": "^5.11.1",
     "jsonwebtoken": "^9.0.3",
-    "mysql2": "^3.17.2"
+    "mysql2": "^3.17.2",
+    "rate-limit-redis": "^5.0.0"
   },
   "devDependencies": {
     "jest": "^30.3.0"
