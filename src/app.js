@@ -1,11 +1,16 @@
 // 1 Importações
 require('dotenv').config();
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
+
 
 
 // 2 Criar app
 const app = express();
+
+// HELMET 
+app.use(helmet());
 
 
 // 3  Middlewares globais
