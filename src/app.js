@@ -17,6 +17,10 @@ app.use(helmet());
 app.use(express.json());
 
 // 4 Transactions Rotas 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok'})
+});
+
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
