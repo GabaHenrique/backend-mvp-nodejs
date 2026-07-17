@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const adminModel = require('../models/adminModel');
+const { ConflictError, UnauthorizedError } = require('../errors/AppError');
 
 const SALT_ROUNDS = 10;
 
@@ -9,7 +10,7 @@ exports.register = async (name, email, password) => {
     const existingAdmin = await adminModel.findByEmail(email);
 
     if (existingAdmin) {
-        throw new Error('Email já cadastrado');
+        throw new ConflictError('Email já cadastrado');
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -27,13 +28,13 @@ exports.login = async (email, password) => {
     const admin = await adminModel.findByEmail(email);
 
     if (!admin) {
-        throw new Error('Credenciais inválidas');
+        throw new UnauthorizedError('Credenciais inválidas');
     }
 
     const isMatch = await bcrypt.compare(password, admin.password);
 
     if (!isMatch) {
-        throw new Error('Credenciais inválidas');
+        throw new UnauthorizedError('Credenciais inválidas');
     }
 
     const token = jwt.sign(
@@ -45,12 +46,7 @@ exports.login = async (email, password) => {
     return token;
 };
 
-
-
 exports.getDashboard = async () => {
-
   const metrics = await adminModel.getDashboardMetrics();
-
   return metrics;
-
 };

@@ -44,6 +44,12 @@ app.use('/admin', adminRoutes);
 // 5 Porta
 const PORT = process.env.PORT;
 
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.statusCode ? err.message : 'Erro interno no servidor';
+  res.status(statusCode).json({ error: message });
+});
+
 // 7 Iniciar servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);

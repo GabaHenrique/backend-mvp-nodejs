@@ -1,105 +1,98 @@
 const productModel = require('../models/productModel');
+const { ValidationError, ConflictError, NotFoundError } = require('../errors/AppError');
 
 exports.create = async (data) => {
   if (!data.name?.trim()) {
-    throw new Error('Name é obrigatorio');
+    throw new ValidationError('Name é obrigatorio');
   }
 
   if (!data.description?.trim()) {
-    throw new Error('Description é obrigatoria'); 
-  }  
+    throw new ValidationError('Description é obrigatoria');
+  }
 
+  if (data.price === undefined || isNaN(Number(data.price))) {
+    throw new ValidationError('Price é obrigatoria');
+  }
 
-  
- if (data.price === undefined || isNaN(Number(data.price))) {
-  throw new Error('Price é obrigatoria');
-}
-
-    if (Number(data.price) <= 0) {
-      throw new Error('Price deve ser maior que zero')
-    }  
+  if (Number(data.price) <= 0) {
+    throw new ValidationError('Price deve ser maior que zero');
+  }
 
   const name = await productModel.findByName(data.name);
 
   if (name) {
-    throw new Error('Name ja cadastrado');
+    throw new ConflictError('Name ja cadastrado');
   }
 
   return await productModel.create({
     name: data.name.trim(),
     description: data.description || null,
-    price: Number (data.price),
-    stock: Number (data.stock),
+    price: Number(data.price),
+    stock: Number(data.stock),
     category: data.category || null,
     image: data.image || null
-    
-  })
+  });
 };
-
 
 exports.update = async (id, data) => {
   const produto = await productModel.findById(id);
 
   if (!produto) {
-    throw new Error('Produto não encontrado');
+    throw new NotFoundError('Produto não encontrado');
   }
 
   if ('name' in data) {
     if (!data.name?.trim()) {
-    throw new Error('Name não pode ser vazio');
+      throw new ValidationError('Name não pode ser vazio');
+    }
+    const nameExistente = await productModel.findByName(data.name);
+
+    if (nameExistente && nameExistente.id !== id) {
+      throw new ConflictError('Name ja cadastrado');
+    }
   }
-const nameExistente = await productModel.findByName(data.name);
 
-  if (nameExistente && nameExistente.id !== id) {
-    throw new Error ('Name ja cadastrado');
-  }
-}
+  const dadosCompletos = {
+    name: data.name ?? produto.name,
+    description: data.description ?? produto.description,
+    price: data.price !== undefined ? Number(data.price) : produto.price,
+    stock: data.stock !== undefined ? Number(data.stock) : produto.stock,
+    category: data.category ?? produto.category,
+    image: data.image ?? produto.image
+  };
 
-const dadosCompletos = {
-  name: data.name ?? produto.name,
-  description: data.description ?? produto.description,
-  price: data.price !== undefined ? Number (data.price) : produto.price,
-  stock: data.stock !== undefined ? Number (data.stock) : produto.stock,
-  category: data.category ?? produto.category,
-  image: data.image ?? produto.image
-
-};
-
-return await productModel.update(id, dadosCompletos)
+  return await productModel.update(id, dadosCompletos);
 };
 
 exports.findById = async (id) => {
   const produto = await productModel.findById(id);
 
   if (!produto) {
-    throw new Error('Produto não encontrado');
+    throw new NotFoundError('Produto não encontrado');
   }
 
   return produto;
-}; 
-
+};
 
 exports.remove = async (id) => {
   const produto = await productModel.findById(id);
 
   if (!produto) {
-    throw new Error('Produto não encontrado');
+    throw new NotFoundError('Produto não encontrado');
   }
 
   return await productModel.remove(id);
 };
 
-
 exports.addStock = async (productId, quantity) => {
-
   if (quantity <= 0) {
-    throw new Error("Quantidade inválida");
+    throw new ValidationError("Quantidade inválida");
   }
 
   const product = await productModel.findById(productId);
 
   if (!product) {
-    throw new Error("Produto não encontrado");
+    throw new NotFoundError("Produto não encontrado");
   }
 
   await productModel.addStock(productId, quantity);
@@ -107,38 +100,35 @@ exports.addStock = async (productId, quantity) => {
   return {
     message: "Estoque atualizado"
   };
-
 };
 
 exports.getProducts = async (category, page, limit) => {
   const parsedPage = Number(page);
   const parsedLimit = Number(limit);
-  
-  const hasPagination = 
-  !Number.isNaN(parsedPage) &&
-  !Number.isNaN(parsedLimit) &&
-  parsedPage > 0 &&
-  parsedLimit > 0;
 
-if (hasPagination) {
-  const offset = (parsedPage - 1) * parsedLimit;
+  const hasPagination =
+    !Number.isNaN(parsedPage) &&
+    !Number.isNaN(parsedLimit) &&
+    parsedPage > 0 &&
+    parsedLimit > 0;
 
+  if (hasPagination) {
+    const offset = (parsedPage - 1) * parsedLimit;
 
-  if (category) {
-    return await productModel.getProductsByCategoryPaginated(
-      category,
-      parsedLimit,
-      offset
-    );
+    if (category) {
+      return await productModel.getProductsByCategoryPaginated(
+        category,
+        parsedLimit,
+        offset
+      );
+    }
+
+    return await productModel.getAllProductsPaginated(parsedLimit, offset);
   }
 
-  return await productModel.getAllProductsPaginated(parsedLimit, offset);
-}
+  if (category) {
+    return await productModel.getProductsByCategory(category);
+  }
 
-if (category) {
-  return await productModel.getProductsByCategory(category);
-
-}
-
-return await productModel.getAllProducts();
+  return await productModel.getAllProducts();
 };
