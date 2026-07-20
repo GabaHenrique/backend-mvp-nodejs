@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/app.js",
     "test": "jest",
+    "test:unit": "jest testes/service testes/middleware",
+    "test:integration": "jest testes/integration",    
     "dev": "node src/app.js"
   },
   "author": "Gabriel Henrique Moeller",
